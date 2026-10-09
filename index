@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA JUSTICE DE DIEU - Ferme d'élevage Dogbo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<script type="importmap">{"imports":{"firebase/app":"https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js","firebase/auth":"https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js","firebase/firestore":"https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"}}</script>
+<style>:root{--vert:#0a7a42}.bg-vert{background:var(--vert)}.text-vert{color:var(--vert)}.btn-vert{background:var(--vert)}.btn-vert:hover{background:#086636}.card{box-shadow:0 4px 20px rgba(0,0,0,.08)}</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<header class="bg-vert text-white p-4 flex justify-between items-center sticky top-0 z-50">
+<div class="flex items-center gap-3"><i class="fa-solid fa-scale-balanced text-2xl"></i><div><h1 class="font-black text-[16px] leading-none">LA JUSTICE DE DIEU</h1><p class="text-[11px] opacity-90">Ferme d'élevage pondeuses - Dogbo, Bénin</p></div></div>
+<div id="userBox" class="hidden items-center gap-3"><span id="userEmail" class="text-xs hidden md:block"></span><span id="userRole" class="bg-white text-vert px-3 py-1 rounded-full text-xs font-bold uppercase"></span><button id="btnLogout" class="bg-white/20 px-3 py-1.5 rounded-lg text-sm"><i class="fa-solid fa-right-from-bracket"></i></button></div>
+</header>
+<section id="authSection" class="max-w-md mx-auto mt-10 p-6 bg-white rounded-2xl card">
+<div class="text-center mb-6"><div class="w-16 h-16 bg-vert rounded-2xl mx-auto flex items-center justify-center text-white text-2xl mb-3"><i class="fa-solid fa-egg"></i></div><h2 class="text-2xl font-bold">LA JUSTICE DE DIEU</h2><p class="text-sm text-gray-600 font-bold">EGG-BENIN MANAGER</p><p class="text-xs text-gray-500">Gérant: Kouessi Franck Kevin ADRE<br>franckadre7@gmail.com - 01 58 07 07 08</p></div>
+<div class="space-y-3">
+<input id="email" type="email" placeholder="Email" class="w-full border rounded-xl px-4 py-3">
+<input id="password" type="password" placeholder="Mot de passe" class="w-full border rounded-xl px-4 py-3">
+<input id="nom" type="text" placeholder="Nom complet" value="Kouessi Franck Kevin ADRE" class="w-full border rounded-xl px-4 py-3">
+<select id="role" class="w-full border rounded-xl px-4 py-3"><option value="superviseur">Superviseur Général</option><option value="receptionniste">Réceptionniste</option><option value="magasiniere">Magasinière</option></select>
+<button id="btnLogin" class="w-full btn-vert text-white py-3 rounded-xl font-bold">Se connecter</button>
+<button id="btnRegister" class="w-full border border-vert text-vert py-3 rounded-xl font-bold">Créer un compte</button>
+<p id="authMsg" class="text-sm text-center text-red-500"></p>
+</div>
+</section>
+<section id="appSection" class="hidden max-w-7xl mx-auto p-4">
+<div id="dashboardSup" class="hidden">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+<div class="bg-white p-5 rounded-2xl card border-l-4 border-vert"><p class="text-xs font-bold text-gray-500">POULES</p><h3 id="statPoules" class="text-3xl font-black text-vert">0</h3></div>
+<div class="bg-white p-5 rounded-2xl card border-l-4 border-amber-400"><p class="text-xs font-bold text-gray-500">OEUFS JOUR</p><h3 id="statOeufs" class="text-3xl font-black">0</h3></div>
+<div class="bg-white p-5 rounded-2xl card border-l-4 border-blue-500"><p class="text-xs font-bold text-gray-500">VENTES JOUR</p><h3 id="statVentes" class="text-3xl font-black">0</h3></div>
+<div class="bg-white p-5 rounded-2xl card border-l-4 border-emerald-600"><p class="text-xs font-bold text-gray-500">BENEFICE</p><h3 id="statBenef" class="text-3xl font-black">0 FCFA</h3></div>
+</div>
+<div class="grid md:grid-cols-2 gap-6">
+<div class="bg-white rounded-2xl p-5 card"><h3 class="font-bold mb-4">PAGE 1 - Production (Superviseur)</h3>
+<div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-bold">Date</label><input id="p1_date" type="date" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Effectif</label><input id="p1_effectif" type="number" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Ramassés</label><input id="p1_ramasses" type="number" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Cassés poulailler</label><input id="p1_casses" type="number" value="0" class="w-full border rounded-lg px-3 py-2"></div><div class="col-span-2 bg-green-50 p-3 rounded-lg text-sm">Bons dispo: <b id="p1_bons">0</b></div></div>
+<button id="btnP1" class="mt-4 w-full btn-vert text-white py-2.5 rounded-xl font-bold">Enregistrer & Transférer Réception</button></div>
+<div class="bg-white rounded-2xl p-5 card"><h3 class="font-bold">Historique Production</h3><div id="listP1" class="mt-3 max-h-[340px] overflow-auto space-y-2 text-sm"></div></div>
+</div>
+</div>
+<div id="dashboardRecep" class="hidden">
+<div class="grid md:grid-cols-2 gap-6">
+<div class="bg-white rounded-2xl p-5 card"><h3 class="font-bold mb-2">PAGE 2 - Réception</h3><div id="listAttenteP1" class="space-y-2"></div></div>
+<div class="bg-white rounded-2xl p-5 card"><h3 class="font-bold mb-4">Formulaire Réception</h3><input type="hidden" id="p2_prodId"><div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-bold">Date</label><input id="p2_date" type="date" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Reçus</label><input id="p2_recus" type="number" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Cassés réception</label><input id="p2_cassesR" type="number" value="0" class="w-full border rounded-lg px-3 py-2"></div><div class="col-span-2 bg-amber-50 p-3 rounded-lg">Bons Magasin: <b id="p2_bons">0</b></div></div><button id="btnP2" class="mt-4 w-full btn-vert text-white py-2.5 rounded-xl font-bold">Transférer au Magasin</button><div id="listP2" class="mt-4 text-sm max-h-[200px] overflow-auto"></div></div>
+</div>
+</div>
+<div id="dashboardMag" class="hidden">
+<div class="grid md:grid-cols-2 gap-6">
+<div class="bg-white rounded-2xl p-5 card"><h3 class="font-bold mb-2">PAGE 3 - Stock & Vente</h3><div id="listAttenteP2" class="space-y-2"></div></div>
+<div class="bg-white rounded-2xl p-5 card"><h3 class="font-bold mb-4">Vente Journalière</h3><input type="hidden" id="p3_transfertId"><div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-bold">Date</label><input id="p3_date" type="date" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Stock veille</label><input id="p3_veille" type="number" value="0" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Entrée jour</label><input id="p3_entree" type="number" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Prix unitaire FCFA</label><input id="p3_prix" type="number" value="120" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Vendus</label><input id="p3_vendus" type="number" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Cassés magasin</label><input id="p3_cassesM" type="number" value="0" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Client nom</label><input id="p3_clientNom" type="text" class="w-full border rounded-lg px-3 py-2"></div><div><label class="text-xs font-bold">Client tel</label><input id="p3_clientTel" type="tel" class="w-full border rounded-lg px-3 py-2"></div><div class="col-span-2 bg-green-50 p-3 rounded-lg text-xs"><div>StockTotal: <b id="calc_total">0</b></div><div>Reste: <b id="calc_reste">0</b></div><div>Montant: <b id="calc_montant">0 FCFA</b></div></div></div><button id="btnP3" class="mt-4 w-full btn-vert text-white py-2.5 rounded-xl font-bold">Enregistrer Vente</button></div>
+</div>
+<div class="bg-white rounded-2xl p-5 card mt-6"><h3 class="font-bold">Historique Ventes</h3><div id="listP3" class="mt-3 overflow-auto"></div></div>
+</div>
+<div class="mt-8 text-center text-xs text-gray-400">© 2026 LA JUSTICE DE DIEU - Dogbo - Gérant Kouessi Franck Kevin ADRE | 01 58 07 07 08</div>
+</section>
+<script type="module">
+import { initializeApp } from 'firebase/app';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getFirestore, collection, addDoc, doc, setDoc, getDoc, onSnapshot, query, orderBy, where, serverTimestamp, limit } from 'firebase/firestore';
+const firebaseConfig = { apiKey: "A_REMPLACER", authDomain: "A_REMPLACER", projectId: "A_REMPLACER", storageBucket: "A_REMPLACER", messagingSenderId: "A_REMPLACER", appId: "A_REMPLACER" };
+const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+let currentUserData=null;
+document.getElementById('btnRegister').onclick=async()=>{const e=document.getElementById('email').value.trim(),p=document.getElementById('password').value,r=document.getElementById('role').value,n=document.getElementById('nom').value.trim()||'Kouessi Franck Kevin ADRE';if(!e||p.length<6){document.getElementById('authMsg').textContent='Email + 6 car min';return;}try{const c=await createUserWithEmailAndPassword(auth,e,p);await setDoc(doc(db,'users',c.user.uid),{uid:c.user.uid,email:e,role:r,nom:n,createdAt:serverTimestamp()});}catch(err){document.getElementById('authMsg').textContent=err.message;}};
+document.getElementById('btnLogin').onclick=async()=>{try{await signInWithEmailAndPassword(auth,document.getElementById('email').value.trim(),document.getElementById('password').value);}catch(e){document.getElementById('authMsg').textContent=e.message;}};
+document.getElementById('btnLogout').onclick=()=>signOut(auth);
+onAuthStateChanged(auth,async(user)=>{if(!user){document.getElementById('authSection').classList.remove('hidden');document.getElementById('appSection').classList.add('hidden');document.getElementById('userBox').classList.add('hidden');return;}const s=await getDoc(doc(db,'users',user.uid));if(!s.exists()){await signOut(auth);return;}currentUserData=s.data();document.getElementById('authSection').classList.add('hidden');document.getElementById('appSection').classList.remove('hidden');document.getElementById('userBox').classList.remove('hidden');document.getElementById('userBox').classList.add('flex');document.getElementById('userEmail').textContent=currentUserData.email;document.getElementById('userRole').textContent=currentUserData.role;document.getElementById('dashboardSup').classList.add('hidden');document.getElementById('dashboardRecep').classList.add('hidden');document.getElementById('dashboardMag').classList.add('hidden');if(currentUserData.role==='superviseur'){document.getElementById('dashboardSup').classList.remove('hidden');document.getElementById('dashboardRecep').classList.remove('hidden');document.getElementById('dashboardMag').classList.remove('hidden');}if(currentUserData.role==='receptionniste')document.getElementById('dashboardRecep').classList.remove('hidden');if(currentUserData.role==='magasiniere')document.getElementById('dashboardMag').classList.remove('hidden');init();});
+function todayISO(){return new Date().toISOString().split('T')[0];}
+document.getElementById('p1_date').value=todayISO();document.getElementById('p2_date').value=todayISO();document.getElementById('p3_date').value=todayISO();
+function calcP1(){const r=parseInt(document.getElementById('p1_ramasses').value)||0,c=parseInt(document.getElementById('p1_casses').value)||0;document.getElementById('p1_bons').textContent=r-c;}document.getElementById('p1_ramasses').addEventListener('input',calcP1);document.getElementById('p1_casses').addEventListener('input',calcP1);
+function calcP2(){const r=parseInt(document.getElementById('p2_recus').value)||0,c=parseInt(document.getElementById('p2_cassesR').value)||0;document.getElementById('p2_bons').textContent=r-c;}document.getElementById('p2_recus').addEventListener('input',calcP2);document.getElementById('p2_cassesR').addEventListener('input',calcP2);
+function calcP3(){const v=parseInt(document.getElementById('p3_veille').value)||0,e=parseInt(document.getElementById('p3_entree').value)||0,vn=parseInt(document.getElementById('p3_vendus').value)||0,cm=parseInt(document.getElementById('p3_cassesM').value)||0,pr=parseInt(document.getElementById('p3_prix').value)||0;const tot=v+e,rest=tot-vn-cm,mnt=vn*pr;document.getElementById('calc_total').textContent=tot;document.getElementById('calc_reste').textContent=rest;document.getElementById('calc_montant').textContent=mnt.toLocaleString()+' FCFA';return{total:tot,reste:rest,montant:mnt};}['p3_veille','p3_entree','p3_vendus','p3_cassesM','p3_prix'].forEach(id=>document.getElementById(id).addEventListener('input',calcP3));
+window.selectP1=(id,date,bons)=>{document.getElementById('p2_prodId').value=id;document.getElementById('p2_date').value=date;document.getElementById('p2_recus').value=bons;calcP2();};
+window.selectP2=(id,date,bons)=>{document.getElementById('p3_transfertId').value=id;document.getElementById('p3_date').value=date;document.getElementById('p3_entree').value=bons;calcP3();};
+function init(){
+onSnapshot(query(collection(db,'production_journaliere'),orderBy('date','desc'),limit(20)),snap=>{const d=document.getElementById('listP1');d.innerHTML='';let last=0,sum=0;const today=todayISO();snap.forEach(x=>{const v=x.data();last=v.effectif||last;if(v.date===today)sum+=v.bonsDisponibles||0;d.innerHTML+=`<div class="border rounded-lg p-2 flex justify-between"><span>${v.date} - ${v.oeufsRamasses} (${v.bonsDisponibles} bons)</span><span class="text-vert font-bold text-xs">${v.status}</span></div>`;});document.getElementById('statPoules').textContent=last;document.getElementById('statOeufs').textContent=sum;});
+onSnapshot(query(collection(db,'stock_vente'),orderBy('date','desc'),limit(30)),snap=>{let vend=0,benef=0,html=`<div class="overflow-x-auto"><table class="min-w-full text-xs"><tr class="bg-gray-100"><th class="p-2">Date</th><th>Entrée</th><th>Vendus</th><th>Reste</th><th>Montant</th><th>Client</th></tr>`;snap.forEach(x=>{const v=x.data();if(v.date===todayISO()){vend+=v.vendus||0;benef+=v.montantTotal||0;}html+=`<tr class="border-b"><td class="p-2">${v.date}</td><td>${v.entreeJour}</td><td>${v.vendus}</td><td>${v.reste}</td><td>${(v.montantTotal||0).toLocaleString()} FCFA</td><td>${v.clientNom||''}</td></tr>`;});html+=`</table></div>`;document.getElementById('listP3').innerHTML=html;document.getElementById('statVentes').textContent=vend;document.getElementById('statBenef').textContent=benef.toLocaleString()+' FCFA';});
+onSnapshot(query(collection(db,'production_journaliere'),where('status','==','transfere_reception'),orderBy('date','desc')),snap=>{const div=document.getElementById('listAttenteP1');div.innerHTML='';snap.forEach(x=>{const v=x.data();div.innerHTML+=`<div class="border bg-amber-50 rounded-lg p-3 flex justify-between items-center"><div><b>${v.date}</b> - ${v.bonsDisponibles} oeufs</div><button onclick="selectP1('${x.id}','${v.date}',${v.bonsDisponibles})" class="btn-vert text-white px-3 py-1 rounded-lg text-xs">Réceptionner</button></div>`;});if(snap.empty)div.innerHTML='<p class="text-center text-gray-400 py-4 text-sm">Aucun lot en attente</p>';});
+onSnapshot(query(collection(db,'transfert_reception'),orderBy('date','desc'),limit(20)),snap=>{const l=document.getElementById('listP2');l.innerHTML='';snap.forEach(x=>{const v=x.data();l.innerHTML+=`<div class="border rounded p-2 mt-1">${v.date} - Reçus:${v.oeufsRecus} Bons:${v.bonsTransferesMagasin} - ${v.status}</div>`;});});
+onSnapshot(query(collection(db,'transfert_reception'),where('status','==','transfere_magasin'),orderBy('date','desc')),snap=>{const div=document.getElementById('listAttenteP2');div.innerHTML='';snap.forEach(x=>{const v=x.data();div.innerHTML+=`<div class="border bg-green-50 rounded-lg p-3 flex justify-between items-center"><div><b>${v.date}</b> - ${v.bonsTransferesMagasin} oeufs</div><button onclick="selectP2('${x.id}','${v.date}',${v.bonsTransferesMagasin})" class="btn-vert text-white px-3 py-1 rounded-lg text-xs">Vendre</button></div>`;});if(snap.empty)div.innerHTML='<p class="text-center text-gray-400 py-4 text-sm">Aucun transfert en attente</p>';});
+}
+document.getElementById('btnP1').onclick=async()=>{const date=document.getElementById('p1_date').value,eff=parseInt(document.getElementById('p1_effectif').value)||0,ram=parseInt(document.getElementById('p1_ramasses').value)||0,cas=parseInt(document.getElementById('p1_casses').value)||0;if(!date||!eff||!ram){alert('Remplis tout');return;}await addDoc(collection(db,'production_journaliere'),{date,effectif:eff,oeufsRamasses:ram,cassesPoulailler:cas,bonsDisponibles:ram-cas,superviseurId:auth.currentUser.uid,superviseurNom:currentUserData.nom,status:'transfere_reception',createdAt:serverTimestamp()});alert('Transféré réception');};
+document.getElementById('btnP2').onclick=async()=>{const pid=document.getElementById('p2_prodId').value,date=document.getElementById('p2_date').value,rec=parseInt(document.getElementById('p2_recus').value)||0,cas=parseInt(document.getElementById('p2_cassesR').value)||0;if(!pid){alert('Sélectionne un lot');return;}await addDoc(collection(db,'transfert_reception'),{date,productionId:pid,oeufsRecus:rec,cassesReception:cas,bonsTransferesMagasin:rec-cas,receptionnisteId:auth.currentUser.uid,status:'transfere_magasin',createdAt:serverTimestamp()});alert('Transféré magasin');};
+document.getElementById('btnP3').onclick=async()=>{const date=document.getElementById('p3_date').value,veille=parseInt(document.getElementById('p3_veille').value)||0,entree=parseInt(document.getElementById('p3_entree').value)||0,vendus=parseInt(document.getElementById('p3_vendus').value)||0,cas=parseInt(document.getElementById('p3_cassesM').value)||0,prix=parseInt(document.getElementById('p3_prix').value)||0,cn=document.getElementById('p3_clientNom').value,ct=document.getElementById('p3_clientTel').value;const {total,reste,montant}=calcP3();if(!date||!entree){alert('Date + entrée obligatoires');return;}await addDoc(collection(db,'stock_vente'),{date,stockVeille:veille,entreeJour:entree,stockTotal:total,vendus,cassesMagasin:cas,reste,prixUnitaire:prix,montantTotal:montant,clientNom:cn,clientTel:ct,magasiniereId:auth.currentUser.uid,createdAt:serverTimestamp()});alert('Vente OK: '+montant+' FCFA');};
+/*
+REGLES FIRESTORE :
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} { allow read, write: if request.auth!= null; }
+  }
+}
+*/
+</script>
+</body>
+</html>
